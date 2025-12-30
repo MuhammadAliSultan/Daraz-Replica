@@ -17,22 +17,11 @@ const createOrder = async (req, res) => {
 
         const createdOrder = await order.save();
 
-        const createdOrder = await order.save();
-
-        // Clear ONLY the purchased items from the user's cart if it's a cart checkout
-        if (req.body.isCartCheckout) {
-            const userDoc = await User.findById(user);
-            if (userDoc) {
-                // Get IDs of purchased products
-                const purchasedProductIds = orderItems.map(item => item.product.toString());
-
-                // Keep items that were NOT purchased
-                userDoc.cart = userDoc.cart.filter(cartItem =>
-                    !purchasedProductIds.includes(cartItem.product.toString())
-                );
-
-                await userDoc.save();
-            }
+        // Clear user's cart
+        const userDoc = await User.findById(user);
+        if (userDoc) {
+            userDoc.cart = [];
+            await userDoc.save();
         }
 
         res.status(201).json(createdOrder);

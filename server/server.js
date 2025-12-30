@@ -12,10 +12,29 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
+const path = require('path');
+
 // Routes
-app.get('/', (req, res) => {
-    res.send('API is running...');
-});
+// app.get('/', (req, res) => {
+//     res.send('API is running...');
+// });
+
+// Serve static assets if in production
+if (process.env.NODE_ENV === 'production') {
+    // Set static folder
+    app.use(express.static(path.join(__dirname, '../client/dist')));
+
+    app.get('*', (req, res) => {
+        // Exclude API routes from this catch-all
+        if (!req.path.startsWith('/api')) {
+            res.sendFile(path.resolve(__dirname, '../client/dist', 'index.html'));
+        }
+    });
+} else {
+    app.get('/', (req, res) => {
+        res.send('API is running...');
+    });
+}
 
 // Import Routes
 app.use('/api/auth', require('./routes/authRoutes'));

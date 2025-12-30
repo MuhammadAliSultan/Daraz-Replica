@@ -29,7 +29,7 @@ const ProductDetail = () => {
         fetchProduct();
     }, [id]);
 
-    const addToCart = async () => {
+    const addToCart = async (silent = false) => {
         if (!user) {
             navigate('/login');
             return;
@@ -42,19 +42,21 @@ const ProductDetail = () => {
                 quantity
             });
             // Update global cart count
-            const newCount = data.cart.products.reduce((acc, item) => acc + item.quantity, 0);
+            const newCount = data.reduce((acc, item) => acc + item.quantity, 0);
             updateCartCount(newCount);
 
-            addToast(`Added ${quantity} ${product.title}(s) to cart!`, 'success');
+            if (!silent) {
+                alert(`Added ${quantity} ${product.title}(s) to cart!`);
+            }
         } catch (error) {
-            addToast('Error adding to cart', 'error');
+            alert('Error adding to cart');
         } finally {
             setLoading(false);
         }
     };
 
     const buyNow = async () => {
-        await addToCart();
+        await addToCart(true);
         navigate('/cart');
     };
 

@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
 import Profile from './pages/Profile';
 import Search from './pages/Search';
 import About from './pages/About';
@@ -28,6 +29,7 @@ function App() {
                             <Route path="/signup" element={<Signup />} />
                             <Route path="/product/:id" element={<ProductDetail />} />
                             <Route path="/cart" element={<Cart />} />
+                            <Route path="/checkout" element={<Checkout />} />
                             <Route path="/profile" element={<Profile />} />
                             <Route path="/search" element={<Search />} />
                             <Route path="/products" element={<Search />} />

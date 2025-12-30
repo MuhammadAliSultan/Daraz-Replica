@@ -11,7 +11,26 @@ const Cart = () => {
     const { user } = useAuth();
     const { updateCartCount } = useCart();
     const [cartItems, setCartItems] = useState([]);
+    const [selectedItems, setSelectedItems] = useState(new Set());
     const navigate = useNavigate();
+
+    // Update selection when cart items load
+    useEffect(() => {
+        if (cartItems.length > 0) {
+            const allIds = new Set(cartItems.map(item => item.product._id));
+            setSelectedItems(allIds);
+        }
+    }, [cartItems]);
+
+    const toggleSelection = (productId) => {
+        const newSelection = new Set(selectedItems);
+        if (newSelection.has(productId)) {
+            newSelection.delete(productId);
+        } else {
+            newSelection.add(productId);
+        }
+        setSelectedItems(newSelection);
+    };
 
     useEffect(() => {
         if (user) {
@@ -28,30 +47,33 @@ const Cart = () => {
         }
     };
 
-    const checkout = async () => {
-        // Create order simple version
-        const totalPrice = cartItems.reduce((acc, item) => acc + item.quantity * item.product.price, 0);
-        const orderItems = cartItems.map(item => ({
-            product: item.product._id,
-            title: item.product.title,
-            quantity: item.quantity,
-            image: item.product.image,
-            price: item.product.price
-        }));
-
+    const removeItem = async (productId) => {
         try {
-            await axios.post('/api/orders', {
-                user: user._id,
-                orderItems,
-                totalPrice
-            });
-            alert('Order Placed Successfully!');
-            setCartItems([]);
-            updateCartCount(0);
-            navigate('/profile');
+            const { data } = await axios.delete(`/api/users/${user._id}/cart/${productId}`);
+            setCartItems(data);
+            const newCount = data.reduce((acc, item) => acc + item.quantity, 0);
+            updateCartCount(newCount);
+            alert('Item removed');
         } catch (error) {
-            alert('Order failed');
+            console.error("Failed to remove item", error);
+            alert('Failed to remove item');
         }
+    };
+
+    const checkout = () => {
+        if (selectedItems.size === 0) {
+            alert("Please select at least one item to checkout");
+            return;
+        }
+
+        const itemsToCheckout = cartItems.filter(item => selectedItems.has(item.product._id));
+
+        navigate('/checkout', {
+            state: {
+                items: itemsToCheckout,
+                source: 'cart'
+            }
+        });
     };
 
     if (!user) return <> <Navbar /> <div className="cart-container">Please login to view cart</div> <Footer /> </>;
@@ -65,6 +87,14 @@ const Cart = () => {
                     <div className="cart-list">
                         {cartItems.map((item) => (
                             <div key={item._id} className="cart-item">
+                                <div style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedItems.has(item.product._id)}
+                                        onChange={() => toggleSelection(item.product._id)}
+                                        style={{ transform: 'scale(1.5)', cursor: 'pointer' }}
+                                    />
+                                </div>
                                 {item.product ? (
                                     <>
                                         <img src={item.product.image} alt={item.product.title} width="80" />
@@ -72,6 +102,22 @@ const Cart = () => {
                                             <h3>{item.product.title}</h3>
                                             <p>Rs. {item.product.price}</p>
                                             <p>Qty: {item.quantity}</p>
+                                            <button
+                                                className="remove-btn"
+                                                onClick={() => removeItem(item.product._id)}
+                                                style={{
+                                                    background: '#ff4444',
+                                                    color: 'white',
+                                                    border: 'none',
+                                                    padding: '5px 10px',
+                                                    borderRadius: '4px',
+                                                    cursor: 'pointer',
+                                                    marginTop: '10px',
+                                                    fontSize: '12px'
+                                                }}
+                                            >
+                                                Remove
+                                            </button>
                                         </div>
                                     </>
                                 ) : (
@@ -81,7 +127,15 @@ const Cart = () => {
                         ))}
 
                         <div className="cart-summary">
-                            <h3>Total: Rs. {cartItems.reduce((acc, item) => acc + (item.product?.price || 0) * item.quantity, 0)}</h3>
+                            <h3>
+                                Total: Rs. {cartItems
+                                    .filter(item => selectedItems.has(item.product?._id))
+                                    .reduce((acc, item) => acc + (item.product?.price || 0) * item.quantity, 0)
+                                    .toLocaleString()}
+                            </h3>
+                            <p style={{ marginBottom: '10px', fontSize: '14px', color: '#666' }}>
+                                ({selectedItems.size} items selected)
+                            </p>
                             <button className="checkout-btn" onClick={checkout}>PROCEED TO CHECKOUT</button>
                         </div>
                     </div>

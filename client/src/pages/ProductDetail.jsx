@@ -56,8 +56,28 @@ const ProductDetail = () => {
     };
 
     const buyNow = async () => {
-        await addToCart(true);
-        navigate('/cart');
+        if (!user) {
+            navigate('/login');
+            return;
+        }
+        setLoading(true);
+        try {
+            const { data } = await axios.post('/api/users/cart', {
+                userId: user._id,
+                productId: product._id,
+                quantity
+            });
+            // Update global cart count
+            const newCount = data.reduce((acc, item) => acc + item.quantity, 0);
+            updateCartCount(newCount);
+
+            // Navigate directly to cart without alert
+            navigate('/cart');
+        } catch (error) {
+            alert('Error proceeding to checkout');
+        } finally {
+            setLoading(false);
+        }
     };
 
     if (!product) return <div>Loading...</div>;

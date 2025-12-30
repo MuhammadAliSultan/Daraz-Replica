@@ -7,6 +7,7 @@ const { createOrder, getMyOrders } = require('../controllers/orderController');
 router.get('/:id', getUserProfile);
 router.post('/cart', addToCart);
 router.get('/:id/cart', getCart);
+router.delete('/:id/cart/:productId', require('../controllers/userController').removeFromCart);
 
 // Order Routes (Merging here for simplicity or separate? Let's keep in one file for "user-centric" routes or separate?)
 // The server.js has app.use('/api/users', ...). I will put order routes here under /:id/orders

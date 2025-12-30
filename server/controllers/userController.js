@@ -39,10 +39,37 @@ const getCart = async (req, res) => {
     try {
         const user = await User.findById(req.params.id).populate('cart.product');
         if (!user) return res.status(404).json({ message: 'User not found' });
-        res.json(user.cart);
+
+        // Filter out items where product is null (deleted products)
+        const activeCartItems = user.cart.filter(item => item.product !== null);
+
+        // Optionally save the cleaned cart back to DB to permanently remove them
+        if (activeCartItems.length !== user.cart.length) {
+            user.cart = activeCartItems;
+            await user.save();
+        }
+
+        res.json(activeCartItems);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 };
 
-module.exports = { getUserProfile, addToCart, getCart };
+const removeFromCart = async (req, res) => {
+    try {
+        const { id, productId } = req.params;
+        const user = await User.findById(id);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        user.cart = user.cart.filter(item => item.product && item.product.toString() !== productId);
+        await user.save();
+
+        // Return updated cart with populated products
+        const updatedUser = await User.findById(id).populate('cart.product');
+        res.json(updatedUser.cart);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+module.exports = { getUserProfile, addToCart, getCart, removeFromCart };

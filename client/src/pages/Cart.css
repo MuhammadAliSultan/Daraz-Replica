@@ -1,0 +1,28 @@
+.cart-container {
+    max-width: 1000px;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 4px;
+    min-height: 300px;
+}
+
+.cart-item {
+    display: flex;
+    gap: 20px;
+    border-bottom: 1px solid #eff0f5;
+    padding: 15px 0;
+}
+
+.cart-summary {
+    margin-top: 20px;
+    text-align: right;
+}
+
+.checkout-btn {
+    background: #f85606;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    cursor: pointer;
+}

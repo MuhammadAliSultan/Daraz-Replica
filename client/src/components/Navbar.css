@@ -1,0 +1,119 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f85606;
+    /* Daraz Orange */
+    padding: 10px 40px;
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-logo a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.navbar-search {
+    display: flex;
+    flex: 1;
+    max-width: 600px;
+    margin: 0 40px;
+    background: white;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.navbar-search input {
+    flex: 1;
+    padding: 12px 15px;
+    border: none;
+    font-size: 14px;
+    outline: none;
+}
+
+.navbar-search button {
+    padding: 0 25px;
+    background-color: #d04905;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.navbar-search button:hover {
+    background-color: #b03e04;
+}
+
+.navbar-links {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.navbar-links a,
+.navbar-links button {
+    color: white;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: opacity 0.2s;
+}
+
+.navbar-links a:hover,
+.navbar-links button:hover {
+    opacity: 0.9;
+}
+
+.cart-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700 !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        padding: 15px 20px;
+        gap: 15px;
+    }
+
+    .navbar-logo {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .navbar-search {
+        width: 100%;
+        margin: 0;
+        max-width: none;
+    }
+
+    .navbar-links {
+        width: 100%;
+        justify-content: space-between;
+        font-size: 12px;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .navbar-links a,
+    .navbar-links button {
+        font-size: 0.85rem;
+    }
+}

@@ -1,0 +1,62 @@
+/* Toast Container positioned fixed on screen */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Individual Toast */
+.toast {
+    background-color: #333;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 250px;
+    animation: slideIn 0.3s ease-out, fadeOut 0.3s ease-in 2.7s forwards;
+    /* fadeOut animation triggers at the end to match auto-dismiss */
+}
+
+/* Success Toast */
+.toast.success {
+    background-color: #4caf50;
+    /* Green */
+}
+
+/* Error Toast */
+.toast.error {
+    background-color: #f44336;
+    /* Red */
+}
+
+/* Info Toast */
+.toast.info {
+    background-color: #2196f3;
+    /* Blue */
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
